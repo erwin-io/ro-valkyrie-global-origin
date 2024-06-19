@@ -1,0 +1,232 @@
+::ng-deep {
+  .navbar {
+    background-color: #fff;
+    color: #333333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100px!important;
+    padding: 15px 50px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+
+  .brand {
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    box-sizing: border-box;
+    align-content: stretch;
+    img {
+      height: 50px!important;
+    }
+  }
+
+  .menu-toggle {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    z-index: 99;
+    gap: 1.5vw;
+  }
+
+  .nav-links li {
+    position: relative;
+  }
+
+  .nav-links a {
+    color: #333333;
+    text-decoration: none;
+    display: block;
+    font-weight: 700!important;
+    cursor: pointer;
+  }
+
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: none;
+    position: absolute;
+    left: 0;
+    background-color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .submenu li {
+    margin: 0;
+  }
+
+  .submenu a {
+    padding: 10px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    &:hover{
+      background: #ffc702 !important;
+    }
+  }
+
+  .social {
+    display: flex;
+    svg {
+      width: 27px;
+      height: 27px;
+      cursor: pointer;
+    }
+    .mdc-button {
+      max-width: 130px!important;
+      width: 100%;
+      height: 50px!important;
+      border-radius: 65px;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      width: 50%!important;
+      li {
+        a {
+          width: max-content!important;
+        }
+        &:hover > .submenu {
+          display: block;
+        }
+        .submenu {
+          a {
+            width: 100%!important;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+
+    .social.sub-header {
+      display: none!important;
+    }
+
+    .brand {
+      width:fit-content!important;
+    }
+
+    .social {
+      display: flex!important;
+      width: 50%!important;
+      .svg-buttons {
+        flex-direction: row!important;
+        justify-content: flex-end!important;
+      }
+      a {
+        text-decoration: none!important;
+        display: flex;
+      }
+      &.sub-header {
+        flex-direction: column!important;
+        justify-content: center!important;
+      }
+    }
+
+  }
+
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .menu-toggle {
+      display: block;
+    }
+
+    .nav-links {
+      flex-direction: column;
+      display: none;
+      width: 100%;
+      background-color: #fff;
+      position: absolute;
+      top: 100px;
+      left: 0;
+      transition: max-height 0.3s ease-in-out;
+      overflow: hidden;
+      max-height: 0;
+      li {
+        .submenu {
+          &.open {
+            display: block;
+          }
+          a {
+            font-weight: 300!important;
+            white-space: nowrap;
+          }
+        }
+      }
+    }
+
+
+    .nav-links.open {
+      display: flex;
+      max-height: 500px; /* Adjust based on number of menu items */
+    }
+
+    .nav-links li {
+      text-align: center;
+      margin: 10px 0;
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: fadeSlideIn 0.5s forwards;
+    }
+
+    .nav-links.open li {
+      animation-delay: calc(0.1s * var(--i));
+    }
+
+    .nav-links li:nth-child(1) { --i: 1; }
+    .nav-links li:nth-child(2) { --i: 2; }
+    .nav-links li:nth-child(3) { --i: 3; }
+    .nav-links li:nth-child(4) { --i: 4; }
+    .nav-links li:nth-child(5) { --i: 5; }
+
+    .brand {
+      width:100%!important;
+    }
+
+    .submenu {
+      position: relative;
+      top: 0;
+      left: 0;
+      box-shadow: none;
+    }
+
+    .submenu a {
+      padding: 10px;
+    }
+
+    .social.header {
+      display: none!important;
+    }
+  }
+
+  /* Animation keyframes */
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+}

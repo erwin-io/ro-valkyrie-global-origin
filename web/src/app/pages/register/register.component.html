@@ -1,0 +1,71 @@
+<div class="content" fxLayout="column" [ngClass.gt-xs]="{'with-padding': true}">
+  <div fxFlex.gt-xs="100" fxFlex class="lead-banner" [ngClass.xs]="{'show': true}">
+    <img src="../../../assets/img/img_logo+(1).png" style="
+      display: flex;
+      width: 100%;
+      ">
+        <h1>Ragnarok Valkyrie Origin Global</h1>
+  </div>
+  <div class="inner-content" fxFlex="100" fxLayout.gt-xs="row" fxLayout="column" >
+    <div fxFlex.gt-xs="50" fxFlex="100" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="center center">
+      <div fxFlex="100" [ngStyle.xs]="{'width': '100%'}" fxLayout="column" fxLayout.gt-xs="row"
+        fxLayoutAlign="center center">
+        <mat-card fxFlex="100" fxLayout="column" [ngClass.gt-xs]="{'with-radius': true}">
+          <mat-card-content fxFlex="100" fxLayout="column" >
+            <h2>Register</h2>
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayout="column" fxFlex="100">
+              <fieldset [disabled]="isProcessing" fxFlex="100" fxLayout="column" fxLayoutGap="25px"
+                fxLayoutAlign="center stretch">
+                <mat-form-field appearance="outline">
+                  <mat-label>Username</mat-label>
+                  <input matInput placeholder="Username" formControlName="userName">
+                  <mat-error *ngIf="getError('userName') !== (null || undefined)">{{
+                    (getError('userName') &&
+                    getError('userName')['required'] ? 'Please enter your username' : '')
+                    }}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Password</mat-label>
+                  <input #password matInput type="password" placeholder="Password" formControlName="password">
+                  <mat-icon class="icon-right"
+                    (click)="password.type = (password.type === 'password' ? 'text' : 'password')"
+                    style="cursor: pointer;" matSuffix>{{ password.type === 'password' ? 'visibility' : 'visibility_off'
+                    }}</mat-icon>
+                  <mat-error *ngIf="getError('password') !== (null || undefined)">{{
+                    (getError('password') &&
+                    getError('password')['required'] ? 'Please enter your password' : '')
+                    }}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Confirm Password</mat-label>
+                  <input #confirmPassword matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword">
+                  <mat-icon class="icon-right"
+                    (click)="confirmPassword.type = (confirmPassword.type === 'password' ? 'text' : 'password')"
+                    style="cursor: pointer;" matSuffix>{{ confirmPassword.type === 'password' ? 'visibility' : 'visibility_off'
+                    }}</mat-icon>
+                  <mat-error *ngIf="getError('confirmPassword') !== (null || undefined)">{{
+                    (getError('confirmPassword') &&
+                    getError('confirmPassword')['required'] ? 'Please enter your password' : '') ||
+                    (getError('confirmPassword') &&
+                    getError('confirmPassword')['notSame'] ? 'Password not match' : '')
+                    }}</mat-error>
+                </mat-form-field>
+                <button mat-raised-button color="primary" type="submit" [disabled]="isProcessing">Register</button>
+                <mat-error class="form-error" *ngIf="error">{{ error }}</mat-error>
+              </fieldset>
+            </form>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+    <div fxFlex.gt-xs="50" class="side-banner" [ngClass.gt-xs]="{'show': true}">
+      <img src="../../../assets/img/img_logo+(1).png" style="
+        display: flex;
+        width: 100%;
+        ">
+        <h1>Ragnarok Valkyrie Origin Global</h1>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
