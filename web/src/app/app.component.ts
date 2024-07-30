@@ -30,7 +30,6 @@ export class AppComponent {
     private router: Router,
     private snackBar:MatSnackBar,
     private appconfig: AppConfigService,
-    private geoLocationService: GeoLocationService,
     private routeService: RouteService,
     private pusher: PusherService)  {
       this.titleService.setTitle(`${this.appconfig.config.appName}`);

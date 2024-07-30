@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { Validators, FormBuilder, ValidationErrors, FormGroup, AbstractControl, ValidatorFn } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { Validators, FormBuilder, ValidationErrors, FormGroup, AbstractControl, ValidatorFn, FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
@@ -14,6 +14,9 @@ import { RouteService } from 'src/app/services/route.service';
 import { AlertDialogModel } from 'src/app/shared/alert-dialog/alert-dialog-model';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component';
 import { Title } from '@angular/platform-browser';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
+import { MatStepper } from '@angular/material/stepper';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -24,13 +27,17 @@ import { Title } from '@angular/platform-browser';
   }
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
+  // registerForm: FormGroup;
+  accountForm: FormGroup;
+  passwordForm: FormGroup;
   protected ngUnsubscribe: Subject<void> = new Subject<void>();
   loading = false;
-  isSubmitting = false;
   error: string;
   isProcessing = false;
+  completed = false;
   userCheckList = [];
+  stepperOrientation: 'horizontal' | 'vertical'
+  @ViewChild("stepper", { static: false }) stepper: MatStepper;
   constructor(
     private formBuilder: FormBuilder,
     private appconfig: AppConfigService,
@@ -40,20 +47,74 @@ export class RegisterComponent {
     private routeService: RouteService,
     private dialog: MatDialog,
     private titleService: Title,
+    private breakpointObserver: BreakpointObserver,
     private router: Router) {
       this.titleService.setTitle(`Register — ${this.appconfig.config.appName}`);
+      // detect screen size changes
+      this.breakpointObserver.observe([
+        "(max-width: 1000px)"
+      ]).subscribe((result: BreakpointState) => {
+        if (result.matches) {
+            // hide stuff     
+            this.stepperOrientation = 'vertical';
+        } else {
+            // show stuff
+            this.stepperOrientation = 'horizontal';
+        }
+      });
     }
 
 
   ngOnInit() {
-    this.registerForm = this.formBuilder.group({
-      userName: [null, [Validators.required, Validators.minLength(2)]],
-      password: [null, [Validators.required,Validators.minLength(8),Validators.maxLength(16)]],
+    // this.registerForm = this.formBuilder.group({
+    //   accountNumber: [null, [Validators.required, Validators.minLength(2)]],
+    //   password: [null, [Validators.required,Validators.minLength(8),Validators.maxLength(16)]],
+    //   confirmPassword: [null, [Validators.required]],
+    // },
+    // { validators: this.customFormValidators });
+
+    this.accountForm = this.formBuilder.group({
+      accountNumber: [null, [Validators.required, Validators.minLength(5), Validators.maxLength(30)]],
+    });
+
+    this.passwordForm = this.formBuilder.group({
+      password: [null, [Validators.required,Validators.minLength(6),Validators.maxLength(30)]],
       confirmPassword: [null, [Validators.required]],
     },
     { validators: this.customFormValidators });
 
   }
+
+  get formValue() {
+    return {
+      ...this.accountForm.value,
+      ...this.passwordForm.value,
+    }
+  }
+
+  get formControls() {
+    return {
+      ...this.accountForm.controls,
+      ...this.passwordForm.controls,
+    }
+  }
+
+  get formValid() {
+    return this.accountForm.valid && this.passwordForm.valid
+  }
+
+  get formDirty() {
+    return this.accountForm.dirty || this.passwordForm.dirty
+  }
+
+  get formPristine() {
+    return this.accountForm.pristine && this.passwordForm.pristine
+  }
+
+  get formTouched() {
+    return this.accountForm.touched || this.passwordForm.touched
+  }
+
 
   customFormValidators: ValidatorFn = (group: AbstractControl):  ValidationErrors | null => {
     if(group.get('confirmPassword').dirty && group.get('confirmPassword')?.dirty && group.get('password')?.value !== group.get('confirmPassword')?.value) {
@@ -66,29 +127,86 @@ export class RegisterComponent {
 
 
   getError(key): ValidationErrors {
-    if(this.registerForm.controls[key]?.touched && ( this.registerForm.controls[key]?.dirty || this.registerForm.controls[key]?.invalid || !this.registerForm.controls[key]?.valid)) {
-      return this.registerForm.controls[key].errors;
+    if(this.formControls[key]?.touched && ( this.formControls[key]?.dirty || this.formControls[key]?.invalid || !this.formControls[key]?.valid)) {
+      console.log(this.formControls[key].errors);
+      return this.formControls[key].errors;
     }
     else {
       return null;
     }
   }
 
-  onSubmit() {
-    if (this.registerForm.invalid) {
+  onCheckAccount() {
+    if (!this.accountForm.valid) {
         return;
     }
+    const { accountNumber } = this.accountForm.value;
+    console.log(accountNumber);
     try{
+      this.isProcessing = true;
       this.spinner.show();
-      const dialogData = new AlertDialogModel();
-      console.log(this.registerForm.value);
-      const formData = this.registerForm.value;
-      this.authService.register(formData).pipe(
+      this.authService.checkAccount(accountNumber).pipe(
         takeUntil(this.ngUnsubscribe),
-        catchError(this.handleError('login', []))
+        catchError(this.handleError('register', []))
       ).subscribe(async (res: ApiResponse<Users>)=> {
         console.log(res);
-        if(res.success) {
+        if(res.data) {
+          this.stepper.next();
+          this.accountForm.controls["accountNumber"].setErrors(null)
+        } else {
+          this.error = "The account has been used!";
+          this.accountForm.controls["accountNumber"].setErrors({
+            exist: true,
+          })
+          this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
+        }
+        this.isProcessing = false;
+        this.spinner.hide();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+      }, async (e)=> {
+        this.spinner.hide();
+        this.error = Array.isArray(e.message) ? e.message[0] : e.message;
+        this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
+        this.isProcessing = false;
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+        console.log(e);
+      }, async ()=> {
+        this.spinner.hide();
+        this.ngUnsubscribe.next();
+        this.ngUnsubscribe.complete();
+      });
+    } catch (e){
+      this.spinner.hide();
+      this.error = Array.isArray(e.message) ? e.message[0] : e.message;
+      this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
+      this.isProcessing = false;
+      this.ngUnsubscribe.next();
+      this.ngUnsubscribe.complete();
+    }
+  }
+
+  onSubmit() {
+    if (!this.formValid) {
+        return;
+    }
+    const formData = {
+      account: this.formValue.accountNumber,
+      password: this.formValue.password
+    };
+    console.log(formData);
+    try{
+      this.isProcessing = true;
+      this.spinner.show();
+      const dialogData = new AlertDialogModel();
+      this.authService.register(formData).pipe(
+        takeUntil(this.ngUnsubscribe),
+        catchError(this.handleError('register', []))
+      ).subscribe(async (res: ApiResponse<Users>)=> {
+        console.log(res);
+        if(res.message === "success") {
+          this.completed = true;
           dialogData.title = 'Successfully registerd!';
           dialogData.dismissButton = {
             visible: true,
@@ -102,21 +220,23 @@ export class RegisterComponent {
           dialogRef.componentInstance.alertDialogConfig = dialogData;
           dialogRef.afterClosed().subscribe(res=> {
             dialogRef.close();
-            this.router.navigate(['/auth/login/driver']);
+            // this.router.navigate(['/']);
           });
         } else {
+          this.completed = false;
           this.error = res.message.toString();
           this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
         }
-        this.isSubmitting = false;
+        this.isProcessing = false;
         this.spinner.hide();
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
       }, async (e)=> {
+        this.completed = false;
         this.spinner.hide();
         this.error = Array.isArray(e.message) ? e.message[0] : e.message;
         this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
-        this.isSubmitting = false;
+        this.isProcessing = false;
         this.ngUnsubscribe.next();
         this.ngUnsubscribe.complete();
         console.log(e);
@@ -129,7 +249,7 @@ export class RegisterComponent {
       this.spinner.hide();
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
       this.snackBar.open(this.error, 'close', {panelClass: ['style-error']});
-      this.isSubmitting = false;
+      this.isProcessing = false;
       this.ngUnsubscribe.next();
       this.ngUnsubscribe.complete();
     }

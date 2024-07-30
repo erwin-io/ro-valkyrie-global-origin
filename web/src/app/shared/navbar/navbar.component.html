@@ -1,29 +1,29 @@
 <nav class="navbar">
   <ul class="nav-links" [ngClass]="{'open': menuOpen}">
-    <li><a href="https://www.valkyrieorigin.com/">HOME</a></li>
+    <li><a href="{{url}}/">HOME</a></li>
     <li (click)="subMenuOpen['GAME'] = !subMenuOpen['GAME']">
       <a>GAME</a>
       <ul class="submenu" [ngClass]="{'open': subMenuOpen['GAME']}">
-        <li><a href="https://www.valkyrieorigin.com/about">ABOUT</a></li>
-        <li><a href="https://www.valkyrieorigin.com/classes">CLASSES</a></li>
+        <li><a href="{{url}}/about">ABOUT</a></li>
+        <li><a href="{{url}}/classes">CLASSES</a></li>
       </ul>
     </li>
     <li (click)="subMenuOpen['COMMUNITY'] = !subMenuOpen['COMMUNITY']">
       <a>COMMUNITY</a>
       <ul class="submenu" [ngClass]="{'open': subMenuOpen['COMMUNITY']}">
-        <li><a href="https://www.valkyrieorigin.com/videos">VIDEOS</a></li>
-        <li><a href="https://www.valkyrieorigin.com/ranking">RANKING</a></li>
-        <li><a href="https://www.valkyrieorigin.com/player-art">PLAYER ART</a></li>
+        <li><a href="{{url}}/videos">VIDEOS</a></li>
+        <li><a href="{{url}}/ranking">RANKING</a></li>
+        <li><a href="{{url}}/player-art">PLAYER ART</a></li>
       </ul>
     </li>
-    <li><a href="https://www.valkyrieorigin.com/news">NEWS</a></li>
-    <li><a href="https://www.valkyrieorigin.com/support">SUPPORT</a></li>
+    <li><a href="{{url}}/news">NEWS</a></li>
+    <li><a href="{{url}}/support">SUPPORT</a></li>
     <li>
       <app-social class="sub-header" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="20px"></app-social>
     </li>
   </ul>
   <div class="brand">
-    <img src="../../../assets/img/banner-color.png" alt="">
+    <img src="../../../assets/img/banner_top.png" alt="">
   </div>
   <app-social class="header" fxLayout="row" fxLayoutAlign="flex-end center" fxLayoutGap="20px"></app-social>
   <div class="menu-toggle" (click)="toggleMenu()">

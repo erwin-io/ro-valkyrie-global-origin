@@ -2,11 +2,8 @@
   "appName": "Valkyrie Origin Global",
   "apiEndPoints": {
     "auth": {
-      "register": "/auth/register/"
-    },
-    "user": {
-    },
-    "wallet": {
+      "checkAccount": "/player/register/exist?account=",
+      "register": "/player/register/d4eubdb"
     }
   }
 }

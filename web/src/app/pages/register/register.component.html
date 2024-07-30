@@ -1,69 +1,137 @@
 <div class="content" fxLayout="column" [ngClass.gt-xs]="{'with-padding': true}">
-  <div fxFlex.gt-xs="100" fxFlex class="lead-banner" [ngClass.xs]="{'show': true}">
-    <img src="../../../assets/img/img_logo+(1).png" style="
+  <div fxFlex fxFlex class="lead-banner" [ngClass.xs]="{'show': true}">
+    <img src="../../../assets/img/banner.png" style="
       display: flex;
       width: 100%;
       ">
-        <h1>Ragnarok Valkyrie Origin Global</h1>
   </div>
   <div class="inner-content" fxFlex="100" fxLayout.gt-xs="row" fxLayout="column" >
-    <div fxFlex.gt-xs="50" fxFlex="100" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="center center">
+    <div fxFlex.gt-xs="65" fxFlex="100" fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="center center">
       <div fxFlex="100" [ngStyle.xs]="{'width': '100%'}" fxLayout="column" fxLayout.gt-xs="row"
         fxLayoutAlign="center center">
-        <mat-card fxFlex="100" fxLayout="column" [ngClass.gt-xs]="{'with-radius': true}">
+        <mat-card fxFlex="100" fxLayout="column" [ngClass.gt-xs]="{'with-radius': true}" *ngIf="!completed; else isCompleted">
           <mat-card-content fxFlex="100" fxLayout="column" >
-            <h2>Register</h2>
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" fxLayout="column" fxFlex="100">
-              <fieldset [disabled]="isProcessing" fxFlex="100" fxLayout="column" fxLayoutGap="25px"
-                fxLayoutAlign="center stretch">
-                <mat-form-field appearance="outline">
-                  <mat-label>Username</mat-label>
-                  <input matInput placeholder="Username" formControlName="userName">
-                  <mat-error *ngIf="getError('userName') !== (null || undefined)">{{
-                    (getError('userName') &&
-                    getError('userName')['required'] ? 'Please enter your username' : '')
-                    }}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Password</mat-label>
-                  <input #password matInput type="password" placeholder="Password" formControlName="password">
-                  <mat-icon class="icon-right"
-                    (click)="password.type = (password.type === 'password' ? 'text' : 'password')"
-                    style="cursor: pointer;" matSuffix>{{ password.type === 'password' ? 'visibility' : 'visibility_off'
-                    }}</mat-icon>
-                  <mat-error *ngIf="getError('password') !== (null || undefined)">{{
-                    (getError('password') &&
-                    getError('password')['required'] ? 'Please enter your password' : '')
-                    }}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Confirm Password</mat-label>
-                  <input #confirmPassword matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword">
-                  <mat-icon class="icon-right"
-                    (click)="confirmPassword.type = (confirmPassword.type === 'password' ? 'text' : 'password')"
-                    style="cursor: pointer;" matSuffix>{{ confirmPassword.type === 'password' ? 'visibility' : 'visibility_off'
-                    }}</mat-icon>
-                  <mat-error *ngIf="getError('confirmPassword') !== (null || undefined)">{{
-                    (getError('confirmPassword') &&
-                    getError('confirmPassword')['required'] ? 'Please enter your password' : '') ||
-                    (getError('confirmPassword') &&
-                    getError('confirmPassword')['notSame'] ? 'Password not match' : '')
-                    }}</mat-error>
-                </mat-form-field>
-                <button mat-raised-button color="primary" type="submit" [disabled]="isProcessing">Register</button>
-                <mat-error class="form-error" *ngIf="error">{{ error }}</mat-error>
-              </fieldset>
-            </form>
+            <h2>Game Registration</h2>
+            <mat-stepper [linear]="true" #stepper [orientation]="stepperOrientation" >
+              <mat-step [stepControl]="accountForm" label="Set up account">
+                <form [formGroup]="accountForm" (ngSubmit)="onCheckAccount()" >
+                  <fieldset [disabled]="isProcessing" fxFlex="100" fxLayout="column" fxLayoutGap="25px" fxLayoutAlign="center stretch">
+                    <div>
+                      <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Set Account</mat-label>
+                        <input matInput placeholder="Enter account number" formControlName="accountNumber">
+                        <mat-error *ngIf="getError('accountNumber') !== (null || undefined)">{{
+                          (getError('accountNumber') &&
+                          getError('accountNumber')['required'] ? 'Please enter your player account' : '')
+                          }}</mat-error>
+                        <mat-error *ngIf="getError('accountNumber') !== (null || undefined)">{{
+                          (getError('accountNumber') &&
+                          getError('accountNumber')['minlength'] ? 'Please use an account with 5 - 30 digits and letters!' : '')
+                          }}</mat-error>
+                        <mat-error *ngIf="getError('accountNumber') !== (null || undefined)">{{
+                          (getError('accountNumber') &&
+                          getError('accountNumber')['maxlength'] ? 'Please use an account with 5 - 30 digits and letters!' : '')
+                          }}</mat-error>
+                        <mat-error *ngIf="getError('accountNumber') !== (null || undefined)">{{
+                          (getError('accountNumber') &&
+                          getError('accountNumber')['exist'] ? 'The account has been used!' : '')
+                          }}</mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxFlex fxLayout="column" fxLayout.gt-sm="row" class="step-footer">
+                      <button fxFlex.sm="100" mat-raised-button color="primary" type="submit" [disabled]="isProcessing">Next</button>
+                    </div>
+                  </fieldset>
+                </form>
+              </mat-step>
+              <mat-step [stepControl]="passwordForm" label="Set Password">
+                <form [formGroup]="passwordForm">
+                  <fieldset [disabled]="isProcessing" fxFlex="100" fxLayout="column" fxLayoutGap="25px" fxLayoutAlign="center stretch">
+                    <div>
+                      <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Password</mat-label>
+                        <input #password matInput type="password" placeholder="Password" formControlName="password">
+                        <mat-icon class="icon-right"
+                          (click)="password.type = (password.type === 'password' ? 'text' : 'password')"
+                          style="cursor: pointer;" matSuffix>{{ password.type === 'password' ? 'visibility' : 'visibility_off'
+                          }}</mat-icon>
+                        <mat-error *ngIf="getError('password') !== (null || undefined)">{{
+                          (getError('password') &&
+                          getError('password')['minlength'] ? 'The password length is limited to 6 ~ 30 characters' : '')
+                          }}</mat-error>
+                          <mat-error *ngIf="getError('password') !== (null || undefined)">{{
+                            (getError('password') &&
+                            getError('password')['maxlength'] ? 'The password length is limited to 6 ~ 30 characters' : '')
+                            }}</mat-error>
+                        <mat-error *ngIf="getError('password') !== (null || undefined)">{{
+                          (getError('password') &&
+                          getError('password')['required'] ? 'Please enter your password' : '')
+                          }}</mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div>
+                      <mat-form-field appearance="outline" fxFlex="100">
+                        <mat-label>Confirm Password</mat-label>
+                        <input #confirmPassword matInput type="password" placeholder="Confirm Password" formControlName="confirmPassword">
+                        <mat-icon class="icon-right"
+                          (click)="confirmPassword.type = (confirmPassword.type === 'password' ? 'text' : 'password')"
+                          style="cursor: pointer;" matSuffix>{{ confirmPassword.type === 'password' ? 'visibility' : 'visibility_off'
+                          }}</mat-icon>
+                        <mat-error *ngIf="getError('confirmPassword') !== (null || undefined)">{{
+                          (getError('confirmPassword') &&
+                          getError('confirmPassword')['required'] ? 'Please enter your password' : '') ||
+                          (getError('confirmPassword') &&
+                          getError('confirmPassword')['notSame'] ? 'Password not match' : '')
+                          }}</mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxFlex fxLayout="column" fxLayout.gt-sm="row" class="step-footer" fxLayoutGap="10px">
+                      <button fxFlex.sm="100" mat-stroked-button matStepperPrevious [disabled]="isProcessing">Back</button>
+                      <button fxFlex.sm="100" matStepperNext mat-raised-button color="primary" [disabled]="isProcessing || !formValid || !formDirty">Next</button>
+                    </div>
+                  </fieldset>
+                </form>
+              </mat-step>
+              <mat-step label="Submit">
+                <p>Thank you for registering! Please review your information and click "Submit" to complete your registration. </p>
+                <br>
+                <div fxFlex fxLayout="column" fxLayout.gt-sm="row" class="step-footer" fxLayoutGap="10px">
+                  <button fxFlex.sm="100" mat-stroked-button matStepperPrevious *ngIf="!completed" [disabled]="isProcessing">Back</button>
+                  <button fxFlex.sm="100" mat-raised-button color="primary" type="submit" *ngIf="!completed" [disabled]="isProcessing" (click)="onSubmit()">Submit</button>
+                  <button fxFlex.sm="100" mat-raised-button color="primary" type="submit" *ngIf="completed" (click)="stepper.reset()">Reset</button>
+                </div>
+                <br>
+                <p style="color: #f44336!important;">{{error}}</p>
+              </mat-step>
+            </mat-stepper>
           </mat-card-content>
         </mat-card>
+        <ng-template #isCompleted>
+          <mat-card fxFlex="100" fxLayout="column" [ngClass.gt-xs]="{'with-radius': true}" class="success">
+            <mat-card-content fxFlex="100" fxLayout="column" >
+              <div class="success-header">
+                  <div class="icon">&#10004;</div>
+                  <div class="message">
+                    <h3>Awesome.</h3><br>
+                    You're ready to play VALKYRIE ORIGIN!</div>
+              </div>
+              <div class="success-footer">
+                <button class="image-button">
+                  <img src="../../../assets/img/Login_btn.png" alt="" routerLink="/">
+                </button>
+                <!-- <button fxFlex.sm="100" mat-raised-button color="primary" type="submit" routerLink="/">Start</button> -->
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </ng-template>
       </div>
     </div>
-    <div fxFlex.gt-xs="50" class="side-banner" [ngClass.gt-xs]="{'show': true}">
-      <img src="../../../assets/img/img_logo+(1).png" style="
+    <div fxFlex fxLayoutAlign="center center" class="side-banner" [ngClass.gt-xs]="{'show': true}">
+      <img src="../../../assets/img/banner.png" style="
         display: flex;
         width: 100%;
         ">
-        <h1>Ragnarok Valkyrie Origin Global</h1>
+        <!-- <h1>Ragnarok Valkyrie Origin Global</h1> -->
     </div>
   </div>
 </div>

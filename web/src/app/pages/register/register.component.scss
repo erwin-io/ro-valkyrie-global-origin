@@ -1,4 +1,12 @@
 ::ng-deep {
+  mat-form-field {
+    margin-top: 8px;
+  }
+
+  .mat-mdc-form-field-error-wrapper {
+    padding-left: 0!important;
+  }
+  
   .page-component {
     // /* Set the background size to cover the entire element */
     // background-size: cover;
@@ -15,7 +23,7 @@
     // position: relative; /* or absolute/fixed depending on your layout */
     // overflow: hidden; /* If needed to prevent content from spilling out */
 
-    background-image: url(../../../assets/img/ragnarok.jpg);
+    background-image: url(../../../assets/img/bg.jpg);
     backdrop-filter: blur(3px); /* apply the blur */
     background-repeat: no-repeat;
     background-position: center;
@@ -47,7 +55,7 @@
         justify-content: center;
         align-items: center;
         img {
-          width: 50%!important;
+          // width: 50%!important;
         }
         &:not(.show) {
           display: none!important;
@@ -73,7 +81,7 @@
       justify-content: center;
       align-items: center;
       img {
-        width: 50%!important;
+        // width: 50%!important;
       }
       &:not(.show) {
         display: none!important;
@@ -96,9 +104,60 @@
       }
       form {
         fieldset {
-          button[type="submit"] {
-            min-height: 65px;
-            border-radius: 35px;
+        }
+      }
+      .step-footer {
+        button {
+          min-height: 45px!important;
+        }
+      }
+      &.success {
+        mat-card-content {
+          padding: 0!important;
+          .success-header {
+            padding: 20px!important;
+            background-color: #4caf50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            .icon {
+              font-size: 40px;
+              margin-bottom: 20px;
+            }
+            .message {
+              font-size: 18px;
+              margin-bottom: 20px;
+              text-align: center;
+            }
+          }
+          .success-footer {
+            padding: 20px!important;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .mdc-button {
+              background-color: #4caf50;
+            }
+            .image-button {
+              height: auto;
+              background-size: cover;
+              border: none;
+              color: #fff;
+              font-size: 20px;
+              cursor: pointer;
+              text-align: center;
+              padding: 0!important;
+              margin: 0!important;
+              img {
+                width: 100%!important;
+              }
+            }
+            
+            .image-button:hover {
+                opacity: 0.8; /* Optional: Add a hover effect */
+            }
           }
         }
       }

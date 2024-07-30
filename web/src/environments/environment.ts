@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: "http://localhost:3000/api/v1",
+  proxyID: 10149,
+  apiBaseUrl: "https://pay.roorigin.vip/api",
   oneSignalAppId: "2d60a699-ef0c-4a17-9786-f72b27f39eda",
   pusher: {
     key: "f1456b01b6514f09b9a3",

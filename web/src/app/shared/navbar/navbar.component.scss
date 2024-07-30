@@ -24,7 +24,7 @@
     box-sizing: border-box;
     align-content: stretch;
     img {
-      height: 50px!important;
+      height: 180px!important;
     }
   }
 
@@ -95,10 +95,9 @@
     }
   }
 
-  @media only screen and (min-width: 768px) {
+  @media only screen and (min-width: 1000px) {
     .nav-links {
       display: flex;
-      flex-wrap: wrap;
       width: 50%!important;
       li {
         a {
@@ -121,7 +120,7 @@
     }
 
     .brand {
-      width:fit-content!important;
+      min-width:0!important;
     }
 
     .social {
@@ -144,7 +143,7 @@
   }
 
   /* Responsive styles */
-  @media (max-width: 768px) {
+  @media (max-width: 1000px) {
     .menu-toggle {
       display: block;
     }

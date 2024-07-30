@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject, of } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -30,11 +30,29 @@ export class AuthService implements IServices {
     this.ngUnsubscribe.complete();
   }
 
-  register(data: any): Observable<ApiResponse<Users>> {
+  checkAccount(account): Observable<ApiResponse<any>> {
+    return this.http.get<any>(environment.apiBaseUrl + this.appconfig.config.apiEndPoints.auth.checkAccount + account)
+    .pipe(
+      tap(_ => this.log('auth')),
+      catchError(this.handleError('auth', []))
+    );
+  }
+
+  register(data: {
+    account: string;
+    password: string;
+  }): Observable<ApiResponse<Users>> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/x-www-form-urlencoded'
+    });
+    let params = new HttpParams()
+      .set('account', data.account)
+      .set('password', data.password)
+      .set('proxyID', environment.proxyID);
     return this.http
       .post<any>(
         environment.apiBaseUrl + this.appconfig.config.apiEndPoints.auth.register,
-        data
+        params.toString(), { headers }
       )
       .pipe(
         tap((_) => (this.isLoggedIn = true)),
